@@ -872,7 +872,11 @@ void FPixelShaderInOut_MainPS(
 	float MaterialAO = GetMaterialAmbientOcclusion(PixelMaterialInputs);
 	float Roughness = GetMaterialRoughness(PixelMaterialInputs);
 	float Anisotropy = GetMaterialAnisotropy(PixelMaterialInputs);
+#if NUM_MATERIAL_OUTPUTS_GETTOONSHADING
+	uint ShadingModel = SHADINGMODELID_STYLIZED_SHADOW;
+#else
 	uint ShadingModel = GetMaterialShadingModel(PixelMaterialInputs);
+#endif
 
 	half Opacity = GetMaterialOpacity(PixelMaterialInputs);
 

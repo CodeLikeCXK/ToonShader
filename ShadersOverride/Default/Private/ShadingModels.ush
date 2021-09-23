@@ -755,6 +755,8 @@ FDirectLighting PreintegratedSkinBxDF( FGBufferData GBuffer, half3 N, half3 V, h
 	return Lighting;
 }
 
+#include "Toon/ToonShaderModels.usf"
+
 FDirectLighting IntegrateBxDF( FGBufferData GBuffer, half3 N, half3 V, half3 L, float Falloff, float NoL, FAreaLight AreaLight, FShadowTerms Shadow )
 {
 	switch( GBuffer.ShadingModelID )
@@ -763,6 +765,8 @@ FDirectLighting IntegrateBxDF( FGBufferData GBuffer, half3 N, half3 V, half3 L, 
 		case SHADINGMODELID_SINGLELAYERWATER:
 		case SHADINGMODELID_THIN_TRANSLUCENT:
 			return DefaultLitBxDF( GBuffer, N, V, L, Falloff, NoL, AreaLight, Shadow );
+		case SHADINGMODELID_STYLIZED_SHADOW:
+			return StylizedShadowBxDF(GBuffer, N, V, L, Falloff, NoL, AreaLight, Shadow);
 		case SHADINGMODELID_SUBSURFACE:
 			return SubsurfaceBxDF( GBuffer, N, V, L, Falloff, NoL, AreaLight, Shadow );
 		case SHADINGMODELID_PREINTEGRATED_SKIN:
