@@ -401,38 +401,8 @@ FDeferredLightingSplit GetDynamicLightingSplit(
 			}
 
 			Lighting.Specular *= LightData.SpecularScale;
-
-			// STYLIZEDSHADOW SHADING 
-			if (GBuffer.ShadingModelID == SHADINGMODELID_STYLIZED_SHADOW)
-			{
-				float3 Attenuation = 1;
-			
-				float offset = GBuffer.CustomData.y;
-				float TerminatorRange = saturate(GBuffer.Roughness - 0.5);
 				
-				offset = offset * 2 - 1;
-				
-				BRANCH
-				if (offset >= 1)
-				{
-					Attenuation = 1;
-				}
-				else
-				{
-					float NoL = (dot(N, L) + 1) / 2;
-					float NoLOffset = saturate(NoL + offset);
-					float LightAttenuationOffset = saturate( Shadow.SurfaceShadow + offset);
-					float ToonSurfaceShadow = smoothstep(0.5 - TerminatorRange, 0.5 + TerminatorRange, LightAttenuationOffset);
-
-					Attenuation = smoothstep(0.5 - TerminatorRange, 0.5 + TerminatorRange, NoLOffset) * ToonSurfaceShadow;
-				}
-
-				LightAccumulator_AddSplit( LightAccumulator, Lighting.Diffuse, Lighting.Specular, Lighting.Diffuse, LightColor * LightMask * Shadow.SurfaceShadow * Attenuation * 0.25, bNeedsSeparateSubsurfaceLightAccumulation);
-			}
-			else
-			{
-			    LightAccumulator_AddSplit( LightAccumulator, Lighting.Diffuse, Lighting.Specular, Lighting.Diffuse, LightColor * LightMask * Shadow.SurfaceShadow, bNeedsSeparateSubsurfaceLightAccumulation );
-			}
+			LightAccumulator_AddSplit( LightAccumulator, Lighting.Diffuse, Lighting.Specular, Lighting.Diffuse, LightColor * LightMask * Shadow.SurfaceShadow, bNeedsSeparateSubsurfaceLightAccumulation );
 			LightAccumulator_AddSplit( LightAccumulator, Lighting.Transmission, 0.0f, Lighting.Transmission, LightColor * LightMask * Shadow.TransmissionShadow, bNeedsSeparateSubsurfaceLightAccumulation );
 
 			LightAccumulator.EstimatedCost += 0.4f;		// add the cost of the lighting computations (should sum up to 1 form one light)
